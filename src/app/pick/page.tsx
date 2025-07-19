@@ -1,28 +1,51 @@
-import PickCard, { PickCardProps } from "./components/PickCard";
+'use client'
 
-export default function Pick({ className }: {className?: string}) {
+import { useEffect, useState } from "react";
+import PickCard, { PickCardPickProps, PickCardProps, UserUiData } from "./components/PickCard";
+import { PickDto } from "./model";
 
-  const picks: PickCardProps[] = [
-    { user: { name: "Tom", color: "#f5a6a2" }, pick: { artist:"artist", year:1234, spotifyUrl:"https://www.google.com", notes:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent a molestie diam. Cras pellentesque erat diam, in asdfasdfa." }},
-    { user: { name: "Kevin", color: "#f4a986" }, pick: { artist:"artist", year:1234, spotifyUrl:"https://www.google.com", notes:"abc123" }},
-    { user: { name: "Alex", color: "#f5eba2" }},
-    { user: { name: "Will", color: "#baf6af" }, pick: { artist:"artist", year:1234, spotifyUrl:"https://www.google.com", notes:"abc123" }},
-    { user: { name: "Anthony", color: "#afd5f6" }, pick: { artist:"artist", year:1234, spotifyUrl:"https://www.google.com"}},
-    { user: { name: "Joe", color: "#d3b8f7" }},
-    { user: { name: "Jon", color: "#f7b8c9" }, pick: { artist:"artist", year:1234, spotifyUrl:"https://www.google.com" }},
+export interface PickProps {
+  className?: string,
+  activeUserId: number
+}
 
-  ]
+export default function Pick(props: PickProps) {
+  const [picks, setPicks] = useState<PickDto[]>([]);
+
+  useEffect(() => {
+    const userId = props.activeUserId
+    fetch(`/api/pick?activeUserId=${userId}`)
+      .then(res => res.json())
+      .then((data: PickDto[]) => setPicks(data))
+
+      console.log(picks)
+  }, [props.activeUserId])
+
   
   return (
     <>
-    <div className={`${className} gap-4 flex`}>
-      {picks.map((props, i) => (
+    <div className={`${props.className} gap-4 flex`}>
+      {picks.map((p) => {
+        const user: UserUiData = {
+          name: p.User.UserName,
+          color: p.User.Color
+        }
+
+        const pickCardProps: PickCardPickProps = {
+          artist: p.Artist,
+          year: p.Year,
+          spotifyUrl: p.SpotifyUrl,
+          notes: p.Note
+        }
+        
+        return (
         <PickCard
-          key={i}
-          user={props.user}
-          pick={props.pick}
+          key={p.User.UserId}
+          user={user}
+          pick={!!p.PickId ? pickCardProps : undefined}
         />
-      ))}
+      )
+      })}
     </div>
     </>
   )
