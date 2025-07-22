@@ -1,12 +1,11 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import PickCard, { PickCardPickProps, PickCardProps, UserUiData } from "./components/PickCard";
+import PickCard, { PickCardPickProps, UserUiData } from "./components/PickCard";
 import { PickDto } from "./model";
 
 export interface PickProps {
   className?: string,
-  activeUserId: number
 }
 
 export default function Pick(props: PickProps) {
@@ -20,16 +19,13 @@ export default function Pick(props: PickProps) {
       // body: JSON.stringify({ username: 'userName', password: 'password' }),
       credentials: 'include',
     })
-  })
+  }, [])
 
   useEffect(() => {
-    const userId = props.activeUserId
     fetch(`/api/pick`)
       .then(res => res.json())
       .then((data: PickDto[]) => setPicks(data))
-
-      console.log(picks)
-  }, [props.activeUserId])
+  }, [])
 
   
   return (

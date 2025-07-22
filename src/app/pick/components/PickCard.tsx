@@ -1,8 +1,5 @@
 'use client'
 
-
-import { useEffect } from "react"
-
 export interface UserUiData {
   name: string,
   color: string
@@ -21,8 +18,6 @@ export interface PickCardProps {
 }
 
 export default function PickCard(props: PickCardProps) {
-
-
   return (
     <>
       <div className="size-56 p-2 border">
