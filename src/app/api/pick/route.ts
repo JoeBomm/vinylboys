@@ -1,19 +1,16 @@
 import { PickReadModel, toPickDtos } from '@/app/pick/model';
+import { withUser } from '@/lib/api/withUser';
 import { db } from '@/lib/db'
+import { JwtPayload } from '@/types/jwt';
 import { NextRequest, NextResponse } from 'next/server'
 
 export interface GetPicksQuery {
   activeUserId: number
 }
 
-export async function GET(req: NextRequest) {
-  
-  const { searchParams } = new URL(req.url);
-  const activeUserId = Number(searchParams.get('activeUserId'));
+export const GET = withUser(async (user: JwtPayload, req: NextRequest) => {  
 
-  if (!activeUserId) {
-    return NextResponse.json({ error: 'Missing activeUserId' }, { status: 400 });
-  }
+  const activeUserId = user.userId;
 
   const query = `
   SELECT 
@@ -41,4 +38,4 @@ WHERE DATETIME('now') < gt.[EndDateUTC]
 
   const pickData = db.prepare(query).all(activeUserId) as PickReadModel[];
   return NextResponse.json(toPickDtos(pickData))
-}
+});

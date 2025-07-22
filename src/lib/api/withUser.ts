@@ -1,15 +1,16 @@
-import { NextResponse } from 'next/server';
-import { getUserIdFromReq } from '../auth/getUserFromReq';
+import { NextRequest } from "next/server";
+import { getUserFromRequest } from "../auth/getUserFromRequest";
+import { JwtPayload } from "@/types/jwt";
 
+type HandlerWithUser = (user: JwtPayload, req: NextRequest) => Promise<Response>;
 
-export function withUser(
-  handler: (userId: string, req: Request) => Promise<Response | NextResponse>
-) {
-  return async (req: Request) => {
-    const userId = await getUserIdFromReq(req);
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export function withUser(handler: HandlerWithUser) {
+  return async (req: NextRequest) => {
+    try {
+      const user = await getUserFromRequest(req);
+      return handler(user, req);
+    } catch {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
-    return handler(userId, req);
   };
 }
