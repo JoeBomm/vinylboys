@@ -1,11 +1,7 @@
-export interface User {
-  UserId: number,
-  UserName: string,
-  Color: string
-}
+import { User } from "@/types/user";
 
 export interface PickReadModel {
-  UserId: number,
+  UserId: string,
   UserName: string,
   HexColor: string,
   PickId: number,
@@ -18,30 +14,30 @@ export interface PickReadModel {
 }
 
 export interface PickDto {
-  PickId?: number,
-  AlbumName?: string,
-  Artist?: string,
-  Year?: number,
-  SpotifyUrl?: string,
-  Note?: string,
-  User: User,
-  ThemeName: string
+  pickId?: number,
+  albumName?: string,
+  artist?: string,
+  year?: number,
+  spotifyUrl?: string,
+  note?: string,
+  user: User,
+  themeName: string
 }
 
 export function toPickDto(model: PickReadModel): PickDto {
   return {
-    PickId: model.PickId,
-    AlbumName: model.AlbumName,
-    Artist: model.Artist,
-    Year: model.Year,
-    SpotifyUrl: model.SpotifyUrl,
-    Note: model.Note,
-    User: {
-      UserId: model.UserId,
-      UserName: model.UserName,
-      Color: model.HexColor
+    pickId: model.PickId,
+    albumName: model.AlbumName,
+    artist: model.Artist,
+    year: model.Year,
+    spotifyUrl: model.SpotifyUrl,
+    note: model.Note,
+    user: {
+      userId: model.UserId,
+      userName: model.UserName,
+      color: model.HexColor,
     },
-    ThemeName: model.ThemeName
+    themeName: model.ThemeName,
   }
 }
 

@@ -1,5 +1,3 @@
-// pages/api/login.ts
-
 import { signJwt } from '@/lib/auth/jwt';
 import { JwtPayload } from '@/types/jwt';
 import { serialize } from 'cookie';
