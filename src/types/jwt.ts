@@ -1,7 +1,7 @@
 import { JWTPayload } from "jose";
 
 export interface JwtPayload extends JWTPayload {
-  userId: number;
+  userId: string;
   role: 'admin' | 'user';
   exp?: number;
 }
