@@ -1,13 +1,16 @@
-import Pick from "./pick/page";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import Login from "./login/page";
 
-export default function Home() {
-    return (
+export default async function Home() {
+  const jwt = (await cookies()).get('auth_token')?.value;
+  
+  if (jwt) {
+    redirect('/pick')
+  }
+  return (
     <>
-    <div className="flex h-screen">
-      <Pick 
-        className="m-auto"
-      />
-     </div>
+      <Login />
     </>
-  );
+  )
 }

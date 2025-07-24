@@ -13,7 +13,7 @@ export const GET = withUser(async (user: JwtPayload, req: NextRequest) => {
   const activeUserId = user.userId;
 
   const query = `
-  SELECT 
+SELECT 
   gm.[UserId]
   ,u.[UserName]
   ,u.[HexColor]

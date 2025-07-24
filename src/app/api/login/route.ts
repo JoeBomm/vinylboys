@@ -5,9 +5,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: NextApiRequest) {
-  console.log(req.method)
-
-
   // Replace with real auth check
   const jwtPayload: JwtPayload = {userId: '6', role: "admin"};
 

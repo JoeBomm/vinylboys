@@ -1,5 +1,3 @@
-'use client'
-
 import { PickDto } from "../model"
 
 export default function PickCard(pick: PickDto) {
@@ -7,7 +5,7 @@ export default function PickCard(pick: PickDto) {
     <>
       <div className="size-56 p-2 border">
         <div style={{ backgroundColor: pick.user.color}} className="text-soft-black">{pick.user.userName}</div>
-        {(pick && <div>
+        {(pick.pickId && <div>
             <div>{pick.artist}</div>
             <div>{pick.albumName}</div>
             <div>{pick.year}</div>
@@ -17,7 +15,6 @@ export default function PickCard(pick: PickDto) {
           || (pick.user.userName === "Joe" && <div>Click to Pick</div>) // mock active user zero state
           || <div>This dang ol' boy ain't picked!</div>
         }
-        
       </div>
     </>
   )
