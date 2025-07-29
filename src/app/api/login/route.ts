@@ -8,11 +8,12 @@ export async function POST(req: NextApiRequest) {
   // Replace with real auth check
   const jwtPayload: JwtPayload = {userId: '6', role: "admin"};
 
+  console.log(Date.now())
   if (!jwtPayload) {
     return NextResponse.json({ error: 'Invalid Credentials' }, { status: 401 });
   }
 
-  const token = await signJwt(jwtPayload, "1hr");
+  const token = await signJwt(jwtPayload, "1h");
   
   const SEVEN_DAYS = 60 * 60 * 24 * 7;
   

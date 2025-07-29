@@ -12,11 +12,14 @@
   --font-mono: var(--font-geist-mono);
   --color-soft-white: oklch(0.9646 0.0017 67.8);
   --color-soft-black: oklch(0.3211 0 0);
+  --color-bg-dark: oklch(0.3211 0 0);
+  --color-primary-dark: oklch(0.4202 0.0087 268.45);
+  --color-secondary-dark: oklch(0.5178 0.0185 239.39);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: var(--color-soft-black);
+    --background: var(--color-bg-dark);
     --foreground: var(--color-soft-white);
   }
 }

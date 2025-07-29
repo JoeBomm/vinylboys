@@ -39,3 +39,8 @@ WHERE DATETIME('now') < gt.[EndDateUTC]
   const pickData = db.prepare(query).all(activeUserId) as PickReadModel[];
   return NextResponse.json(toPickDtos(pickData))
 });
+
+export const POST = withUser(async (user: JwtPayload, req: NextRequest) => {  
+
+  return NextResponse.json({});
+});

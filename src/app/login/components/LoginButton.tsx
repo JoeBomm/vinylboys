@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 export default function LoginButton() {
@@ -21,8 +22,7 @@ export default function LoginButton() {
   }
 
   return ( 
-    <button 
-      className="px-2 border"
-      onClick={handleLogin}>Log In</button>
+    <Button 
+      onClick={handleLogin}>Log In</Button>
   );
 }
