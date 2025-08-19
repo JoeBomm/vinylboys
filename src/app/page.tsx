@@ -4,7 +4,9 @@ import Login from "./login/page";
 import { verifyJwt } from "@/lib/auth/jwt";
 
 export default async function Home() {
-  const jwt = (await cookies()).get('auth_token')?.value;
+  const cookieStore = await cookies();
+
+  const jwt = cookieStore.get('auth_token')?.value;
 
   if (jwt) {
     const verified = await verifyJwt(jwt);
@@ -18,5 +20,5 @@ export default async function Home() {
     <>
       <Login />
     </>
-  )
+  )  
 }

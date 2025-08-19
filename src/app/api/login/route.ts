@@ -8,7 +8,6 @@ export async function POST(req: NextApiRequest) {
   // Replace with real auth check
   const jwtPayload: JwtPayload = {userId: '6', role: "admin"};
 
-  console.log(Date.now())
   if (!jwtPayload) {
     return NextResponse.json({ error: 'Invalid Credentials' }, { status: 401 });
   }

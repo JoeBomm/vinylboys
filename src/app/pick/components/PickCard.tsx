@@ -24,8 +24,7 @@ export default function PickCard(pick: PickDto) {
             <div>
               <Button onClick={() => setIsOpen(true)}>Pick</Button>
               <PickInput isOpen={isOpen} onClose={() => setIsOpen(false)}></PickInput>
-                
-              </div>
+            </div>
                 ) // mock active user zero state
           || <div>This dang ol' boy ain't picked!</div>
         }
