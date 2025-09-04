@@ -1,41 +1,42 @@
 `use client`
 
+import { submitTheme } from "@/app/api/pick/actions";
 import { Button } from "@/components/ui/button";
 import { Field, Fieldset, Input, Label, Legend, Textarea } from "@headlessui/react";
 
 export default function ThemeInput() {
   return (
-    <>
+    <form action={submitTheme} className="space-y-4">
       <div>It's your turn to select a theme</div>
+
       <Fieldset>
-        <Legend>
+        <Legend>Theme Info</Legend>
+
           <Field>
-            <Label>Name</Label>
-            <Input className="border-b" required></Input>
+            <Label htmlFor="themeName">Name</Label>
+            <Input 
+            id="themeName"
+            name="themeName"
+            className="border-b" 
+            required
+            />
           </Field>
+
           <Field>
-            <Label>Description</Label>
-            <Textarea className="border-b" required></Textarea>
+            <Label htmlFor="themeDescription">Description</Label>
+            <Textarea 
+            id="themeDescription"
+            name="themeDescription"
+            className="border-b" 
+            required
+            />
           </Field>
-          </Legend>
+
       </Fieldset>
+
       <div className="flex gap-4">
       <Button type="submit">Submit</Button>
       </div>
-    </>
+    </form>
   )
 }
-
-/** TODO Post THEME
- * 
- * 
- Declare @ThemeId NUMBER;
-
-INSERT INTO [Theme] ([Name], [Description], [UserId])
-OUTPUT @ThemeId = INSERTED.[Id]
-VALUES(?, ?, ?)
-
-INSERT INTO [GroupTheme] ([GroupId], [UserId], [ThemeId], [UserId], [EndDateUTC])
-VALUES(?, ?, @ThemeId, ?, ? /*DateADD(?, Group theme length)
- * 
- */

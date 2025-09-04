@@ -8,7 +8,7 @@ describe('JWT utils', () => {
   })
   
   test('sign and verify jwt', async () => {
-    const payload : JwtPayload = { userId: '123', role: 'user'};
+    const payload : JwtPayload = { userId: '123', groupId: '456', role: 'user'};
     const token = await signJwt(payload);
 
     expect(typeof token).toBe('string');
@@ -16,6 +16,7 @@ describe('JWT utils', () => {
     const verifiedPayload = await verifyJwt(token);
     
     expect(verifiedPayload?.userId).toBe('123');
+    expect(verifiedPayload?.groupId).toBe('456');
     expect(verifiedPayload?.role).toBe('user');
   })
 
