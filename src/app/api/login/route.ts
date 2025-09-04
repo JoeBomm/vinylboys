@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: NextApiRequest) {
   // Replace with real auth check
-  const jwtPayload: JwtPayload = {userId: '6', role: "admin"};
+  const jwtPayload: JwtPayload = {userId: '6', groupId: '1', role: "admin"};
 
   if (!jwtPayload) {
     return NextResponse.json({ error: 'Invalid Credentials' }, { status: 401 });
