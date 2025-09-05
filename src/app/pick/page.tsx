@@ -4,15 +4,22 @@ import { PickDto, PickReadModel, toPickDtos } from "./model";
 import { getUser } from "@/lib/auth/getUser";
 import { ThemeDto, ThemeReadModel as ThemeReadModel, toThemeDto } from "../context/model";
 import ThemeInput from "./components/ThemeInput";
+import { cookies } from "next/headers";
 
 export default async function Pick() {
   
   const user = await getUser();
   
-  const theme = getTheme(user.userId);
-  console.log("theme: ", theme);
+  const theme = await getTheme(user.userId);
+  (await cookies()).set({
+    name: "groupThemeId",
+    value: theme.GroupThemeId?.toString() ?? "",
+    path: "/",
+    httpOnly: false,
+    sameSite: "lax"
+  });
 
-  const picks = getPicks(user.userId);
+  const picks = await getPicks(user.userId);
 
   return (
     <>

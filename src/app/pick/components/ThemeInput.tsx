@@ -15,20 +15,20 @@ export default function ThemeInput() {
           <Field>
             <Label htmlFor="themeName">Name</Label>
             <Input 
-            id="themeName"
-            name="themeName"
-            className="border-b" 
-            required
+              id="themeName"
+              name="themeName"
+              className="border-b" 
+              required
             />
           </Field>
 
           <Field>
             <Label htmlFor="themeDescription">Description</Label>
             <Textarea 
-            id="themeDescription"
-            name="themeDescription"
-            className="border-b" 
-            required
+              id="themeDescription"
+              name="themeDescription"
+              className="border-b" 
+              required
             />
           </Field>
 

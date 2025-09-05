@@ -2,6 +2,7 @@
 
 import { withUser } from '@/lib/api/withUser';
 import { db } from '@/lib/db';
+import { cookies } from 'next/headers';
 
 export const submitTheme = withUser(async (user, formData: FormData) => {
   const themeName = formData.get('themeName') as string;
@@ -29,3 +30,42 @@ LIMIT 1
 
   insertGroupTheme.run(themeId, user.userId, user.groupId);
 });
+
+export const submitPick = withUser(async (user, formData: FormData) => {
+  
+  const groupThemeId = Number((await cookies()).get("groupThemeId")?.value);
+
+  if (!groupThemeId) throw new Error("Missing groupThemeId");
+  
+  const pickArtist = formData.get('pickArtist') as string;
+  const pickAlbumName = formData.get('pickAlbumName') as string;
+  const pickYear = Number(formData.get('pickYear') as string);
+  const pickLink = formData.get('pickLink') as string;
+  const pickNotes = formData.get('pickNotes') as string;
+
+  console.log({
+    userId: user.userId,
+    groupThemeId: groupThemeId,
+    pickArtist: pickArtist,
+    pickAlbumName: pickAlbumName,
+    pickYear: pickYear,
+    pickLink: pickLink,
+    pickNotes: pickNotes,
+  })
+
+//   const insertPick = db.prepare(`
+// INSERT INTO [Pick] (UserID, GroupThemeId, AlbumName, Artist, Year, SpotifyUrl, Note)
+//     `);
+
+//   insertPick.run(
+//     user.userId, 
+//     groupThemeId, 
+//     pickArtist, 
+//     pickAlbumName, 
+//     pickYear, 
+//     pickLink, 
+//     pickNotes
+//   )
+})
+
+
