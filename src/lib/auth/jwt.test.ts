@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { JwtPayload } from "@/types/jwt";
+import { JwtPayload } from "@/src/types/jwt";
 import { signJwt, verifyJwt } from "./jwt";
 
 describe('JWT utils', () => {

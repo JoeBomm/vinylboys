@@ -1,7 +1,7 @@
 'use client'
 
-import { submitPick } from "@/app/api/pick/actions";
-import { Button } from "@/components/ui/button";
+import { submitPick } from "@/src/app/api/pick/actions";
+import { Button } from "@/src/components/ui/button";
 import { Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend, Textarea } from "@headlessui/react";
 
 export default function PickInput({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {

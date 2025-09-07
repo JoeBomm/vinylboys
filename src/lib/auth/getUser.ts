@@ -1,17 +1,9 @@
-import { NextRequest } from 'next/server';
-import { verifyJwt } from './jwt';
-import { cookies } from 'next/headers';
+import { auth } from "@/auth";
 
-export async function getUser(req: NextRequest | null = null) {
-  var token: string | undefined;
-  
-  token = !!!req 
-    ? (await cookies()).get('auth_token')?.value 
-    : req.cookies?.get('auth_token')?.value;
+export async function getUser() {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
 
-  if (!token) throw new Error('Unauthorized');
-
-  const payload = await verifyJwt(token);
-  if (!payload) throw new Error('Unauthorized');
-  return payload;
+  // session.user.* comes from your session callback
+  return session.user;
 }

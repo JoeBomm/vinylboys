@@ -1,4 +1,4 @@
-import { JwtPayload } from "@/types/jwt";
+import { JwtPayload } from "@/src/types/jwt";
 import { jwtVerify, SignJWT } from "jose";
 import { jwtSecret } from "./secret";
 

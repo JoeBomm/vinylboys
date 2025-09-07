@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { JwtPayload } from "@/types/jwt";
+import { JwtPayload } from "@/src/types/jwt";
 import { verifyJwt } from "../auth/jwt";
 
 type RouteHandler<T = any> = (user: JwtPayload, req: NextRequest) => Promise<T>;

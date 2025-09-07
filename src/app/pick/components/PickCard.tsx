@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { PickDto } from "../model"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/src/components/ui/button"
 import PickInput from "./PickInput"
 
 export default function PickCard(pick: PickDto) {

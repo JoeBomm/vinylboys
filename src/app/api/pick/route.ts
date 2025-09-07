@@ -1,7 +1,7 @@
-import { PickReadModel, toPickDtos } from '@/app/pick/model';
-import { withUser } from '@/lib/api/withUser';
-import { db } from '@/lib/db'
-import { JwtPayload } from '@/types/jwt';
+import { PickReadModel, toPickDtos } from '@/src/app/pick/model';
+import { withUser } from '@/src/lib/api/withUser';
+import { db } from '@/src/lib/db'
+import { JwtPayload } from '@/src/types/jwt';
 import { NextRequest, NextResponse } from 'next/server'
 
 export interface GetPicksQuery {

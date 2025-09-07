@@ -1,7 +1,7 @@
-import { db } from "@/lib/db";
+import { db } from "@/src/lib/db";
 import PickCard from "./components/PickCard";
 import { PickDto, PickReadModel, toPickDtos } from "./model";
-import { getUser } from "@/lib/auth/getUser";
+import { getUser } from "@/src/lib/auth/getUser";
 import { ThemeDto, ThemeReadModel as ThemeReadModel, toThemeDto } from "../context/model";
 import ThemeInput from "./components/ThemeInput";
 import { cookies } from "next/headers";
@@ -10,16 +10,16 @@ export default async function Pick() {
   
   const user = await getUser();
   
-  const theme = await getTheme(user.userId);
-  (await cookies()).set({
-    name: "groupThemeId",
-    value: theme.GroupThemeId?.toString() ?? "",
-    path: "/",
-    httpOnly: false,
-    sameSite: "lax"
-  });
+  const theme = await getTheme(user.id);
+  // (await cookies()).set({
+  //   name: "groupThemeId",
+  //   value: theme.GroupThemeId?.toString() ?? "",
+  //   path: "/",
+  //   httpOnly: false,
+  //   sameSite: "lax"
+  // });
 
-  const picks = await getPicks(user.userId);
+  const picks = await getPicks(user.id);
 
   return (
     <>
@@ -32,14 +32,14 @@ export default async function Pick() {
               {picks.map((p) => {
                 return (
                 <PickCard
-                key={p.user.userId}
+                key={p.user.id}
                 {...p}       
                 />
               )})}
             </div>
           </div> 
       </div>
-      || (theme.PickerUserId == user.userId 
+      || (theme.PickerUserId == user.id 
         && 
           <div>
             <ThemeInput />
@@ -113,5 +113,6 @@ LEFT JOIN activeTheme at ON at.groupId = ug.groupId
 LEFT JOIN nextPicker np ON at.groupId IS NULL;`;
     
     const theme = db.prepare(query).get(activeUserId) as ThemeReadModel;
+    // todo: update to .all() and ensure single()
     return toThemeDto(theme);
   }

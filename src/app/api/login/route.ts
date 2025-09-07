@@ -1,5 +1,5 @@
-import { signJwt } from '@/lib/auth/jwt';
-import { JwtPayload } from '@/types/jwt';
+import { signJwt } from '@/src/lib/auth/jwt';
+import { JwtPayload } from '@/src/types/jwt';
 import { serialize } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';

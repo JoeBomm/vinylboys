@@ -1,7 +1,7 @@
 'use server';
 
-import { withUser } from '@/lib/api/withUser';
-import { db } from '@/lib/db';
+import { withUser } from '@/src/lib/api/withUser';
+import { db } from '@/src/lib/db';
 import { cookies } from 'next/headers';
 
 export const submitTheme = withUser(async (user, formData: FormData) => {
@@ -43,15 +43,6 @@ export const submitPick = withUser(async (user, formData: FormData) => {
   const pickLink = formData.get('pickLink') as string;
   const pickNotes = formData.get('pickNotes') as string;
 
-  console.log({
-    userId: user.userId,
-    groupThemeId: groupThemeId,
-    pickArtist: pickArtist,
-    pickAlbumName: pickAlbumName,
-    pickYear: pickYear,
-    pickLink: pickLink,
-    pickNotes: pickNotes,
-  })
 
 //   const insertPick = db.prepare(`
 // INSERT INTO [Pick] (UserID, GroupThemeId, AlbumName, Artist, Year, SpotifyUrl, Note)
