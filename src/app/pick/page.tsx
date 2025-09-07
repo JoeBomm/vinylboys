@@ -6,31 +6,41 @@ import { ThemeDto, ThemeReadModel as ThemeReadModel, toThemeDto } from "../conte
 import ThemeInput from "./components/ThemeInput";
 import { cookies } from "next/headers";
 import SetGroupThemeIdCookie from "./components/SetGroupThemeIdCookie";
+import LogOutButton from "../login/components/LogOutButton";
 
 export default async function Pick() {
   
   const user = await getUser();
   
-  const theme = await getTheme(user.userId);
-  const groupThemeIdCookieValue = 
-    (await cookies()).get("groupThemeId")?.value !== theme.GroupThemeId?.toString;
+  const theme = await getTheme(user.id);
 
+  const groupThemeIdCookie = (await cookies()).get("groupThemeId");
+
+  const setCookieHtml = !groupThemeIdCookie || groupThemeIdCookie.toString() !== theme.GroupThemeId?.toString() ? 
+  <SetGroupThemeIdCookie groupThemeId={theme.GroupThemeId !== null ? theme.GroupThemeId.toString() : null} />
+  : <></>;
+
+
+
+  
   const picks = await getPicks(user.id);
 
   return (
     <>
-    {(!!!groupThemeIdCookieValue || Number(groupThemeIdCookieValue) !== theme.GroupThemeId)
-      && <SetGroupThemeIdCookie groupThemeId={theme.GroupThemeId!.toString()} /> }
+    { setCookieHtml }
     {!!theme.GroupThemeId &&
       <div>
         <div>{theme.ThemeName}</div>
         <div>{theme.Description}</div>
+        <div>
+          <LogOutButton/>
+        </div>
           <div className="flex h-screen">
             <div className="m-auto gap-4 flex">
               {picks.map((p) => {
                 return (
                 <PickCard
-                key={p.user.id}
+                key={p.user.userId}
                 {...p}       
                 />
               )})}

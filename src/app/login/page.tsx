@@ -1,18 +1,12 @@
 import { signIn } from "@/auth";
-import LoginButton from "./components/LoginButton";
 import { Fieldset, Input, Label } from "@headlessui/react";
 import { Button } from "@/src/components/ui/button";
-import { saltAndHashPassword } from "@/src/utils/password";
 
 export default function Login() {
 
-  // return (
-  //   <>
-  //     <LoginButton/>
-  //   </>
-  // )
   return (
     <>
+    <div>
     <form
       action={async (formData) => {
         "use server"
@@ -22,15 +16,24 @@ export default function Login() {
       <Fieldset>
       <Label>
         Email
-        <Input name="email" type="email" />
+        <Input 
+          className="pl-2"
+          name="email" 
+          type="email" 
+        />
       </Label>
       <Label>
         Password
-        <Input name="password" type="text" />
+        <Input 
+          className="pl-2"
+          name="password" 
+          type="text" 
+        />
       </Label>
       </Fieldset>
       <Button type="submit">Sign In</Button>
     </form>
+    </div>
     </>
   )
 }

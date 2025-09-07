@@ -6,7 +6,6 @@ export default async function verifyLoginAndGetUserId(candidateEmail: string, ca
   if (!userCreds) return null;
 
   const isValid = await pwdUtils.verifyPassword(userCreds.hash, candidatePassword)
-  console.log("login valid", isValid)
   
   return isValid ? userCreds.userId : null
 }

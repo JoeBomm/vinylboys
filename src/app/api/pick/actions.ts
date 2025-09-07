@@ -2,9 +2,10 @@
 
 import { withUser } from '@/src/lib/api/withUser';
 import { db } from '@/src/lib/db';
+import { Session } from 'next-auth';
 import { cookies } from 'next/headers';
 
-export const submitTheme = withUser(async (user, formData: FormData) => {
+export const submitTheme = withUser(async (session: Session, formData: FormData) => {
   const themeName = formData.get('themeName') as string;
   const themeDescription = formData.get('themeDescription') as string;
 
@@ -12,7 +13,7 @@ export const submitTheme = withUser(async (user, formData: FormData) => {
 INSERT INTO [Theme] ([Name], [Description], [UserId])
 VALUES(?, ?, ?)`);
 
-  const themeResult = insertTheme.run(themeName, themeDescription, user.userId)
+  const themeResult = insertTheme.run(themeName, themeDescription, session.user.id)
   const themeId = themeResult.lastInsertRowid as number;
 
   const insertGroupTheme = db.prepare(`
@@ -28,11 +29,11 @@ ORDER BY gt.[EndDateUtc] DESC
 LIMIT 1
 `);
 
-  insertGroupTheme.run(themeId, user.userId, user.groupId);
+  insertGroupTheme.run(themeId, session.user.id, session.user.groupId);
 });
 
-export const submitPick = withUser(async (user, formData: FormData) => {
-  
+export const submitPick = withUser(async (session: Session, formData: FormData) => {  
+
   const groupThemeId = Number((await cookies()).get("groupThemeId")?.value);
 
   if (!groupThemeId) throw new Error("Missing groupThemeId");
@@ -50,7 +51,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
   insertPick.run(
-    user.userId, 
+    session.user.id, 
     groupThemeId, 
     pickArtist, 
     pickAlbumName, 

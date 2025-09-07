@@ -1,16 +1,16 @@
 import { PickReadModel, toPickDtos } from '@/src/app/pick/model';
 import { withUser } from '@/src/lib/api/withUser';
 import { db } from '@/src/lib/db'
-import { JwtPayload } from '@/src/types/jwt';
+import { Session } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server'
 
 export interface GetPicksQuery {
   activeUserId: number
 }
 
-export const GET = withUser(async (user: JwtPayload, req: NextRequest) => {  
+export const GET = withUser(async (session: Session, req: NextRequest) => {  
 
-  const activeUserId = user.userId;
+  const activeUserId = session.user.id;
 
   const query = `
 SELECT 
@@ -40,7 +40,7 @@ WHERE DATETIME('now') < gt.[EndDateUTC]
   return NextResponse.json(toPickDtos(pickData))
 });
 
-export const POST = withUser(async (user: JwtPayload, req: NextRequest) => {  
+export const POST = withUser(async (session: Session, req: NextRequest) => {  
 
   return NextResponse.json({});
 });
