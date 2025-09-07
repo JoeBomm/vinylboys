@@ -44,19 +44,20 @@ export const submitPick = withUser(async (user, formData: FormData) => {
   const pickNotes = formData.get('pickNotes') as string;
 
 
-//   const insertPick = db.prepare(`
-// INSERT INTO [Pick] (UserID, GroupThemeId, AlbumName, Artist, Year, SpotifyUrl, Note)
-//     `);
+  const insertPick = db.prepare(`
+INSERT INTO [Pick] (UserID, GroupThemeId, Artist, AlbumName, Year, SpotifyUrl, Note)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
 
-//   insertPick.run(
-//     user.userId, 
-//     groupThemeId, 
-//     pickArtist, 
-//     pickAlbumName, 
-//     pickYear, 
-//     pickLink, 
-//     pickNotes
-//   )
+  insertPick.run(
+    user.userId, 
+    groupThemeId, 
+    pickArtist, 
+    pickAlbumName, 
+    pickYear, 
+    pickLink, 
+    pickNotes
+  );
 })
 
 
