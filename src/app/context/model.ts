@@ -1,5 +1,3 @@
-import { Description } from "@headlessui/react"
-
 export interface ThemeReadModel {
   groupId: number,
   pickerUserId: string,
