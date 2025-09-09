@@ -19,9 +19,6 @@ export default async function Pick() {
   const setCookieHtml = !groupThemeIdCookie || groupThemeIdCookie.toString() !== theme.GroupThemeId?.toString() ? 
   <SetGroupThemeIdCookie groupThemeId={theme.GroupThemeId !== null ? theme.GroupThemeId.toString() : null} />
   : <></>;
-
-
-
   
   const picks = await getPicks(user.id);
 
