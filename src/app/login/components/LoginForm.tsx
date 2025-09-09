@@ -5,9 +5,12 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Fieldset, Label, Input } from "@headlessui/react"
 import { Button } from "@/src/components/ui/button"
+import CreateAccountDialogue from "./CreateAccountDialogue"
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
+  let [createAccountIsOpen, setIsOpen] = useState(false)
+
   const router = useRouter()
 
   async function handleSubmit(formData: FormData) {
@@ -46,8 +49,9 @@ export default function LoginForm() {
          />
        </Label>
        </Fieldset>
-       <Button type="submit">Sign In</Button>
-
+       <Button type="submit" className="mx-2">Sign In</Button>
+       <Button onClick={() => setIsOpen(true)} className="mx-2">Create Account</Button>
+      <CreateAccountDialogue isOpen={createAccountIsOpen} onClose={() => setIsOpen(false)} />
       {error && <p className="text-red-500">{error}</p>}
     </form>
   )
