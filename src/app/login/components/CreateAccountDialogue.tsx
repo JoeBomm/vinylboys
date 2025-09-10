@@ -2,33 +2,24 @@
 
 import { Button } from "@/src/components/ui/button";
 import { Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend } from "@headlessui/react";
-import { createAccount } from "../../api/login/action";
-import { useState } from "react";
+import { CreateAccountResult, createAccount } from "../../api/login/action";
+import { useActionState } from "react";
 
-export default function CreateAccountDialogue({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+const initialState: CreateAccountResult = {
+  success: false,
+  errors: {},
+};
+export default function CreateAccountDialogue({ isOpen, onClose }: 
+  { isOpen: boolean; onClose: () => void }) {
+  
+  const [state, formAction] = useActionState(createAccount, initialState)
 
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setErrors({});
-    const formData = new FormData(e.currentTarget);
-
-    const result = await createAccount(formData);
-
-    if (!result) return;
-
-    if (!result.success) {
-      setErrors(result.errors ?? {});
-      return;
-    }
-    
   return(
     <Dialog open={isOpen} onClose={() => onClose()} className="relative z-50">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="max-w-lg space-y-4 border bg-soft-black p-12">
           <DialogTitle className="font-bold">Create an account</DialogTitle>
-          <form action={handleSubmit}>
+          <form action={formAction}>
             <Fieldset>
             <Legend>
 
@@ -40,7 +31,11 @@ export default function CreateAccountDialogue({ isOpen, onClose }: { isOpen: boo
                   type="email"
                   className="border-b pl-2" 
                   required
+                  defaultValue={state?.values?.email ?? ""}
                 />
+                {state?.errors?.email?.map((err, i) => (
+                  <p key={i} className="text-red-500 text-sm">{err}</p>
+                ))}
               </Field>
 
               <Field>
@@ -51,9 +46,12 @@ export default function CreateAccountDialogue({ isOpen, onClose }: { isOpen: boo
                   type="text"
                   className="border-b pl-2" 
                   required
+                  defaultValue={state?.values?.displayName ?? ""}
                 />
+                {state?.errors?.displayName?.map((err, i) => (
+                  <p key={i} className="text-red-500 text-sm">{err}</p>
+                ))}
               </Field>
-
               <Field>
                 <Label htmlFor="password">Password</Label>
                 <Input 
@@ -62,7 +60,11 @@ export default function CreateAccountDialogue({ isOpen, onClose }: { isOpen: boo
                   type="text"
                   className="border-b pl-2" 
                   required
+                  defaultValue={state?.values?.password ?? ""}
                 />
+              {state?.errors?.password?.map((err, i) => (
+                <p key={i} className="text-red-500 text-sm">{err}</p>
+              ))}
               </Field>
             </Legend>
             </Fieldset>
