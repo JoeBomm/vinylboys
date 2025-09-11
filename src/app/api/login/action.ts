@@ -8,7 +8,7 @@ import z, { success } from "zod";
 
 export interface CreateAccountResult {
   success: boolean
-  errors: {
+  errors?: {
     email?: string[]
     displayName?: string[]
     password?: string[]
@@ -18,7 +18,11 @@ export interface CreateAccountResult {
     email?: string
     displayName?: string
     password?: string
-  }
+  },
+  credentials?: {
+    email: string;
+    password: string;
+  };
 }
 
 
@@ -55,9 +59,15 @@ export async function createAccount(
   const hash = await saltAndHashPassword(password);
   
   try {
-  const userId = insertUserAndCreds(displayName, email, hash);
+  insertUserAndCreds(displayName, email, hash);
 
-  return { success: true, errors: {} };
+  return { 
+    success: true, 
+    credentials: {
+      email: email,
+      password: password
+    } 
+  };
 
   } catch (err: any) {
     if (err.code === "SQLITE_CONSTRAINT_UNIQUE" || err.message?.includes("UNIQUE")) {
@@ -93,6 +103,6 @@ const insertUserAndCreds = db.transaction((displayName: string, email: string, h
   `);
   insertUserCreds.run(userId, email, hash);
 
-  return userId;
+  return;
 });
 

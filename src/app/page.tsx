@@ -6,7 +6,14 @@ export default async function Home() {
   const session = await auth()
 
   if (session?.user) {
-    redirect('/pick')
+    if (session.user.groupId) {
+      redirect('/pick')
+    }
+    return (
+      <>
+      <p>no groupId</p>
+      </>
+    )
   }
 
   return (

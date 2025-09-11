@@ -3,16 +3,31 @@
 import { Button } from "@/src/components/ui/button";
 import { Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend } from "@headlessui/react";
 import { CreateAccountResult, createAccount } from "../../api/login/action";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { signIn } from "next-auth/react";
 
-const initialState: CreateAccountResult = {
-  success: false,
-  errors: {},
-};
+
 export default function CreateAccountDialogue({ isOpen, onClose }: 
   { isOpen: boolean; onClose: () => void }) {
   
-  const [state, formAction] = useActionState(createAccount, initialState)
+  // const [state, formAction] = useActionState(createAccount, initialState)
+  const [state, formAction, isPending] = useActionState<CreateAccountResult | undefined, FormData>(
+    async (_prev, formData) => {
+      return await createAccount(_prev, formData);
+    },
+    { success: false }
+  );
+
+  useEffect(() => {
+    if (state?.success && state?.credentials) {
+      onClose();
+      signIn("credentials", {
+        email: state.credentials.email,
+        password: state.credentials.password,
+        redirectTo: '/'
+      });
+    }
+  }, [state]);
 
   return(
     <Dialog open={isOpen} onClose={() => onClose()} className="relative z-50">

@@ -16,13 +16,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const userId = await verifyLoginAndGetUserId(email, password);
           if (!userId) return null;
           
-          console.log("HEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHEREHERE")
-
           return { 
             id: userId,
-            role: "admin",//user.role,
-            groupId: "1"
-          } 
+            // role: "admin",//user.role,
+            // groupId: "1"
+          } as User
         } catch (error) {
           return null;
         }
