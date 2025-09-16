@@ -29,9 +29,6 @@ export default async function Pick() {
       <div>
         <div>{theme.ThemeName}</div>
         <div>{theme.Description}</div>
-        <div>
-          <LogOutButton/>
-        </div>
           <div className="flex h-screen">
             <div className="m-auto gap-4 flex">
               {picks.map((p) => {

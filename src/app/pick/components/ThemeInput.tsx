@@ -1,7 +1,7 @@
 `use client`
 
 import { submitTheme } from "@/src/app/api/pick/actions";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/components/ui/Button";
 import { Field, Fieldset, Input, Label, Legend, Textarea } from "@headlessui/react";
 
 export default function ThemeInput() {

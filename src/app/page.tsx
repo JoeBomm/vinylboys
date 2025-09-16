@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 export default async function Home() {
   const session = await auth()
 
+  console.log(session)
   if (session?.user) {
     if (session.user.groupId) {
       redirect('/pick')

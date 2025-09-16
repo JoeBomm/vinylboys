@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Fieldset, Label, Input } from "@headlessui/react"
-import { Button } from "@/src/components/ui/button"
+import { Button } from "@/src/components/ui/Button"
 import CreateAccountDialogue from "./CreateAccountDialogue"
 
 export default function LoginForm() {

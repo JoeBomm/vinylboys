@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/components/ui/Button";
 import { Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend } from "@headlessui/react";
 import { CreateAccountResult, createAccount } from "../../api/login/action";
 import { useActionState, useEffect } from "react";
