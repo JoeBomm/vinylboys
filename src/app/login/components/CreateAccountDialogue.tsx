@@ -10,7 +10,6 @@ import { signIn } from "next-auth/react";
 export default function CreateAccountDialogue({ isOpen, onClose }: 
   { isOpen: boolean; onClose: () => void }) {
   
-  // const [state, formAction] = useActionState(createAccount, initialState)
   const [state, formAction, isPending] = useActionState<CreateAccountResult | undefined, FormData>(
     async (_prev, formData) => {
       return await createAccount(_prev, formData);
