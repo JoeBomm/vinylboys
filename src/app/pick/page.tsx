@@ -7,10 +7,22 @@ import ThemeInput from "./components/ThemeInput";
 import { cookies } from "next/headers";
 import SetGroupThemeIdCookie from "./components/SetGroupThemeIdCookie";
 import LogOutButton from "../login/components/LogOutButton";
+import { Button } from "@/src/components/ui/Button";
 
 export default async function Pick() {
   
   const user = await getUser();
+
+  if (!!!user.groupId) {
+    return (
+    <>
+    <div className="flex flex-col h-screen items-center justify-center">
+      <div>You don't have any groups</div>
+      <div>Create or join a group</div>
+      <Button>Groups</Button>
+    </div>
+    </>)
+  }
   
   const theme = await getTheme(user.id);
 
@@ -21,6 +33,8 @@ export default async function Pick() {
   : <></>;
   
   const picks = await getPicks(user.id);
+  
+
 
   return (
     <>

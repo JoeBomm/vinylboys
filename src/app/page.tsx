@@ -5,7 +5,6 @@ import { auth } from "@/auth";
 export default async function Home() {
   const session = await auth()
 
-  console.log(session)
   if (session?.user) {
     if (session.user.groupId) {
       redirect('/pick')
@@ -19,7 +18,7 @@ export default async function Home() {
 
   return (
     <>
-      <Login />
+      <div>Welcome to vinylboys</div>
     </>
   )  
 }

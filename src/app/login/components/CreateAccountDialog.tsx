@@ -7,7 +7,7 @@ import { useActionState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 
 
-export default function CreateAccountDialogue({ isOpen, onClose }: 
+export default function CreateAccountDialog({ isOpen, onClose }: 
   { isOpen: boolean; onClose: () => void }) {
   
   const [state, formAction, isPending] = useActionState<CreateAccountResult | undefined, FormData>(
@@ -29,7 +29,7 @@ export default function CreateAccountDialogue({ isOpen, onClose }:
   }, [state]);
 
   return(
-    <Dialog open={isOpen} onClose={() => onClose()} className="relative z-50">
+    <Dialog open={isOpen} onClose={() => onClose()} className="relative">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="max-w-lg space-y-4 border bg-soft-black p-12">
           <DialogTitle className="font-bold">Create an account</DialogTitle>

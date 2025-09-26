@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Fieldset, Label, Input } from "@headlessui/react"
 import { Button } from "@/src/components/ui/Button"
-import CreateAccountDialogue from "./CreateAccountDialogue"
+import CreateAccountDialog from "./CreateAccountDialog"
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
@@ -23,7 +23,7 @@ export default function LoginForm() {
     if (result?.error) {
       setError("Invalid email or password") 
     } else {
-      router.push("/pick") 
+      router.push("/") 
     }
   }
 
@@ -33,7 +33,7 @@ export default function LoginForm() {
        <Label>
          Email
          <Input 
-           className="pl-2"
+           className="pl-2 border-b"
            name="email" 
            type="email"
            placeholder="email@website.com"
@@ -42,7 +42,7 @@ export default function LoginForm() {
        <Label>
          Password
          <Input 
-           className="pl-2"
+           className="pl-2 mb-2 border-b"
            name="password" 
            type="password" 
            placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
@@ -51,7 +51,7 @@ export default function LoginForm() {
        </Fieldset>
        <Button type="submit" className="mx-2">Sign In</Button>
        <Button onClick={() => setIsOpen(true)} className="mx-2">Create Account</Button>
-      <CreateAccountDialogue isOpen={createAccountIsOpen} onClose={() => setIsOpen(false)} />
+      <CreateAccountDialog isOpen={createAccountIsOpen} onClose={() => setIsOpen(false)} />
       {error && <p className="text-red-500">{error}</p>}
     </form>
   )

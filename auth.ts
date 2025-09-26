@@ -1,6 +1,6 @@
 import NextAuth, { User } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import verifyLoginAndGetUserId from "@/src/utils/login"
+import verifyLoginAndGetUserInfo from "@/src/utils/login"
 import { signInSchema } from "@/src/lib/zod"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -13,15 +13,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         try {
           const { email, password } = await signInSchema.parseAsync(credentials);
-          const userId = await verifyLoginAndGetUserId(email, password);
-          if (!userId) return null;
-          
-          return { 
-            id: userId,
-            // role: "admin",//user.role,
-            // groupId: "1"
-          } as User
+          const user = await verifyLoginAndGetUserInfo(email, password);
+                    
+          return user
         } catch (error) {
+          // todo: implement persisted logging
+          console.log("error: ", error)
           return null;
         }
       },

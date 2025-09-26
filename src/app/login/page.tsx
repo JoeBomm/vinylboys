@@ -4,7 +4,11 @@ export default function Login() {
 
   return (
     <>
-      <LoginForm/>
+      <div className="flex justify-center mt-90">
+        <div className="border rounded p-6 shadow min-w">
+          <LoginForm/>
+        </div>
+      </div>
     </>
   )
 }
