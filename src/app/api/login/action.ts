@@ -1,10 +1,9 @@
 'use server'
 
 import { db } from "@/src/lib/db";
-import { signupSchema } from "@/src/lib/zod";
+import { signInSchema, signupSchema } from "@/src/lib/zod";
 import { saltAndHashPassword } from "@/src/utils/password";
-import { Piazzolla } from "next/font/google";
-import z, { success } from "zod";
+import z from "zod";
 
 export interface CreateAccountResult {
   success: boolean
@@ -25,6 +24,14 @@ export interface CreateAccountResult {
   };
 }
 
+export interface LoginResult {
+  success: boolean
+  errors?: {
+    email?: string[]
+    password?: string[]
+    general?: string[]
+  }
+}
 
 export async function createAccount(
   prevState: CreateAccountResult | undefined,
@@ -88,6 +95,27 @@ export async function createAccount(
     };
   }
 }
+
+export async function validateLogin(formData: FormData): Promise<LoginResult> {
+  const parsed = signInSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  })
+
+  if (!parsed.success) {
+    const tree = z.treeifyError(parsed.error)
+    const errors: Record<string, string[]> = {}
+
+    for (const [field, detail] of Object.entries(tree.properties ?? {})) {
+      errors[field] = detail.errors
+    }
+
+    return { success: false, errors }
+  }
+
+  return { success: true } // validation passed
+}
+
 
 
 const insertUserAndCreds = db.transaction((displayName: string, email: string, hash: string) => {
