@@ -16,12 +16,15 @@ VALUES(?, ?, ?)`);
   const themeResult = insertTheme.run(themeName, themeDescription, session.user.id)
   const themeId = themeResult.lastInsertRowid as number;
 
+  /* Create a new GroupTheme for this group, where the new EndDateUTC 
+  is the last theme’s EndDateUTC plus the group’s theme length (in days). */
   const insertGroupTheme = db.prepare(`
 INSERT INTO [GroupTheme] ([ThemeId], [UserId], [GroupId], [EndDateUTC])
 SELECT 
   ? [ThemeId]
   ,? [UserId]
   ,? [GroupId] 
+  -- Insert Date based on last theme end date + group themeLengthDays days
   ,DATETIME(gt.[EndDateUTC], '+' || g.[ThemeLengthDays] || ' day') [EndDateUtc]
 FROM [Group] g
 JOIN [GroupTheme] gt ON g.Id = gt.[GroupId]
@@ -60,5 +63,3 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
     pickNotes
   );
 })
-
-

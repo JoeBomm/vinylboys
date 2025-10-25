@@ -6,7 +6,6 @@ import { ThemeDto, ThemeReadModel as ThemeReadModel, toThemeDto } from "../conte
 import ThemeInput from "./components/ThemeInput";
 import { cookies } from "next/headers";
 import SetGroupThemeIdCookie from "./components/SetGroupThemeIdCookie";
-import LogOutButton from "../login/components/LogOutButton";
 import { Button } from "@/src/components/ui/Button";
 
 export default async function Pick() {

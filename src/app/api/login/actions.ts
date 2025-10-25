@@ -57,7 +57,7 @@ export async function createAccount(
         email: String(formData.get("email") ?? ""),
         displayName: String(formData.get("displayName") ?? ""),
         password: String(formData.get("password") ?? ""),
-      },
+      }
     };  
   }
 

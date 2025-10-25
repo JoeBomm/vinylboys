@@ -2,6 +2,7 @@ import NextAuth, { User } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import verifyLoginAndGetUserInfo from "@/src/utils/login"
 import { signInSchema } from "@/src/lib/zod"
+import { getUserById } from "./src/utils/db";
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -25,12 +26,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.userId = user.id,
         token.role = user.role,
         token.groupId = user.groupId
       }
+
+      if (trigger === "update") {
+        const updatedUser = await getUserById(token.userId);
+        token.groupId = updatedUser.groupId
+        token.role = updatedUser.role
+      }
+
       return token
     },
     async session({ session, token }) {

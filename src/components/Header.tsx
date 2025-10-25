@@ -16,7 +16,7 @@ export default async function Header() {
         />
         <ClientLink
           initialSession={session}
-          placeholder={<Link href="/groups">Groups</Link>}
+          placeholder={<Link href="/group">Group</Link>}
         />
         <ProfileButton initialSession = {session}/>
       </nav>

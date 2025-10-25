@@ -2,7 +2,7 @@
 
 import { Button } from "@/src/components/ui/Button";
 import { Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend } from "@headlessui/react";
-import { CreateAccountResult, createAccount } from "../../api/login/action";
+import { CreateAccountResult, createAccount } from "../../api/login/actions";
 import { useActionState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 

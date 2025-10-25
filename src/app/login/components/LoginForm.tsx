@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Fieldset, Label, Input } from "@headlessui/react"
 import { Button } from "@/src/components/ui/Button"
 import CreateAccountDialog from "./CreateAccountDialog"
-import { LoginResult, validateLogin } from "../../api/login/action"
+import { LoginResult, validateLogin } from "../../api/login/actions"
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
