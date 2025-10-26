@@ -1,12 +1,12 @@
 'use server'
 
-import { auth } from "@/auth";
 import { withUser } from "@/src/lib/api/withUser";
 import { getNextUtcDateForDay, HHmmToSecondsSinceMidnight } from "@/src/lib/dayjs"
 import { db } from "@/src/lib/db";
 import { createGroupSchema } from "@/src/lib/zod";
 import { Session } from "next-auth";
 import z from "zod";
+import { GroupDetailsDto, GroupDetailsReadModel, toGroupDetailsDto } from "../../pick/model";
 
 export const createGroup = withUser(_createGroupImpl)
 
@@ -148,3 +148,37 @@ const createAndJoinGroup = db.transaction((command: CreateAndJoinGroupCommand) =
 
   return groupId;
 });
+
+export async function GetGroupDetails(groupId: string): Promise<GroupDetailsDto> {
+  const query = db.prepare(`
+WITH NextThemePicker AS (
+  SELECT userId, groupId
+  FROM main.[PickLog]
+  WHERE [GroupId] = @groupId
+  ORDER BY [LastPickedAtUtc] ASC
+  LIMIT 1
+),
+CurrentGroupTheme AS (
+  SELECT [GroupId], [EndDateUtc], [UserId], [ThemeId]
+  FROM main.[GroupTheme]
+  WHERE [GroupId] = @groupId
+  ORDER BY [EndDateUtc] DESC
+  LIMIT 1
+)
+SELECT
+  g.[Name] AS groupName,
+  t.[Name] AS currentThemeName,
+  t.[Description] AS currentThemeDescription,
+  gt.[EndDateUtc] AS themeEndDateUtc,
+  u.[UserName] AS themePickUserName,
+  pu.[UserName] AS nextThemePickUserName
+FROM NextThemePicker np
+JOIN main.[Group] g ON g.[Id] = np.[GroupId]
+JOIN [CurrentGroupTheme] gt ON gt.[GroupId] = g.[Id]
+JOIN main.[Theme] t ON t.[Id] = gt.[ThemeId]
+JOIN main.[User] u ON u.[Id] = gt.[UserId]
+JOIN main.[User] pu ON pu.[Id] = np.[UserId];`)
+
+ const result = query.get({ groupId }) as GroupDetailsReadModel
+ return toGroupDetailsDto(result)
+}

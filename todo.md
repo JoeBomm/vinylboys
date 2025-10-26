@@ -5,10 +5,37 @@
 - [x] move login to modal or page launched from login button
 - [x] Fix login to return group and role if available
 - [x] Add form validation to login form
+
 ### `group-management`
-- [ ] Group Page
-- [ ] Create new group flow
-- [ ] invite link that adds user to group
+Enables group management for a user
+- [x] Group Page
+- [x] View your group's detals
+- [x] Create new group flow
+  - [x] Set Season length
+  - [x] Set Theme length
 - [ ] CRUD group members
-- [ ] Set Season length
-- [ ] Set Theme length
+  - [ ] can't add user to group if in group
+- [ ] invite link that adds user to group
+  - [ ] unauthed user, login or create account -> group join flow
+- [ ] Update Group Details
+  - Need to decided what can be updated for MVP if anything for now, might punt
+
+### `theme-pick-history`
+Enables users to see group pick history for past themes
+
+### `spotify-api-integration`
+- [ ] design spotify flow
+- [ ] submit picks with spotify
+
+### `ui-updates`
+- [ ] "home" should be picks when authed, login when not authed
+  - [ ] make login static again instead of modal
+- [ ] optimize for mobile
+- [ ] full dark mode light mode
+
+### `global-history`
+Enables users to see pick history for themes on all groups
+
+### `uncategorized`
+- [ ] edit pick
+- [ ] voting

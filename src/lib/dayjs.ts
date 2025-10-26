@@ -3,11 +3,13 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import objectSupport from 'dayjs/plugin/objectSupport'
 import utc from 'dayjs/plugin/utc'
 import duration from 'dayjs/plugin/duration'
+// import advancedFormat from 'dayjs/plugin/advancedFormat'
 
 dayjs.extend(customParseFormat);
 dayjs.extend(objectSupport);
 dayjs.extend(utc);
-dayjs.extend(duration)
+dayjs.extend(duration);
+// dayjs.extend(advancedFormat);
 
 export default dayjs;
 

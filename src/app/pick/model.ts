@@ -1,4 +1,5 @@
-import { User } from "@/types/user";
+import dayjs from "@/src/lib/dayjs";
+import { User } from "@/src/types/user";
 
 export interface PickReadModel {
   UserId: string,
@@ -25,6 +26,7 @@ export interface PickDto {
 }
 
 export function toPickDto(model: PickReadModel): PickDto {
+  console.log("toPickDto userId type before", typeof(model.UserId))
   return {
     pickId: model.PickId,
     albumName: model.AlbumName,
@@ -43,4 +45,33 @@ export function toPickDto(model: PickReadModel): PickDto {
 
 export function toPickDtos(models: PickReadModel[]): PickDto[] {
   return models.map(model => toPickDto(model));
+}
+
+export interface GroupDetailsReadModel {
+  groupName: string,
+  currentThemeName: string,
+  currentThemeDescription: string,
+  themeEndDateUtc: string,
+  themePickUserName: string,
+  nextThemePickUserName:string,
+}
+
+export interface GroupDetailsDto {
+  groupName: string,
+  currentThemeName: string,
+  currentThemeDescription: string,
+  themeEndDateUtc: string,
+  themePickUserName: string,
+  nextThemePickUserName:string,
+}
+
+export function toGroupDetailsDto(model: GroupDetailsReadModel): GroupDetailsDto {
+  return {  
+    groupName: model.groupName,
+    currentThemeName: model.currentThemeName,
+    currentThemeDescription: model.currentThemeDescription,
+    themeEndDateUtc: dayjs(model.themeEndDateUtc).format("ddd[,] MMM D [at] hh:mma"),
+    themePickUserName: model.themePickUserName,
+    nextThemePickUserName: model.nextThemePickUserName,
+  }
 }

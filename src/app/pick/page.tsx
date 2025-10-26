@@ -9,7 +9,7 @@ import SetGroupThemeIdCookie from "./components/SetGroupThemeIdCookie";
 import { Button } from "@/src/components/ui/Button";
 
 export default async function Pick() {
-  
+
   const user = await getUser();
 
   if (!!!user.groupId) {
@@ -22,7 +22,7 @@ export default async function Pick() {
     </div>
     </>)
   }
-  
+
   const theme = await getTheme(user.id);
 
   const groupThemeIdCookie = (await cookies()).get("groupThemeId");
@@ -30,10 +30,8 @@ export default async function Pick() {
   const setCookieHtml = !groupThemeIdCookie || groupThemeIdCookie.toString() !== theme.GroupThemeId?.toString() ? 
   <SetGroupThemeIdCookie groupThemeId={theme.GroupThemeId !== null ? theme.GroupThemeId.toString() : null} />
   : <></>;
-  
-  const picks = await getPicks(user.id);
-  
 
+  const picks = await getPicks(user.id);
 
   return (
     <>
@@ -48,7 +46,8 @@ export default async function Pick() {
                 return (
                 <PickCard
                 key={p.user.userId}
-                {...p}       
+                pick={{...p}}
+                activeUserId={user.id}
                 />
               )})}
             </div>

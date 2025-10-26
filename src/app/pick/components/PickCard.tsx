@@ -5,9 +5,13 @@ import { PickDto } from "../model"
 import { Button } from "@/src/components/ui/Button"
 import PickInput from "./PickInput"
 
-export default function PickCard(pick: PickDto) {
-  let [isOpen, setIsOpen] = useState(false)
+interface PickCardProps {
+  pick: PickDto
+  activeUserId: string
+}
 
+export default function PickCard({pick, activeUserId}: PickCardProps) {
+  let [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
@@ -20,7 +24,13 @@ export default function PickCard(pick: PickDto) {
             <div><a href={pick.spotifyUrl} target="_blank" rel="noreferrer">Spotify</a></div>
             <div>Notes: {pick.note}</div>
           </div>)
-          || (pick.user.userName === "Joe" && 
+          /* not strict equals because
+          pick.user.userId is number here, activeUserId is string
+          Looking at the stack where pick.user.userId comes from, at no point
+          should it be a number, but I don't want to spend time digging into it
+          further for minimal payoff, curious but not worth it.
+          */
+          || (pick.user.userId == activeUserId && 
             <div>
               <Button onClick={() => setIsOpen(true)}>Pick</Button>
               <PickInput isOpen={isOpen} onClose={() => setIsOpen(false)}></PickInput>
