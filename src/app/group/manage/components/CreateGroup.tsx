@@ -57,8 +57,8 @@ export default function CreateGroup() {
             Length (weeks)
             <Input 
               type="number" 
-              id="themeLength" 
-              name="themeLength" 
+              id="themeLengthWeeks" 
+              name="themeLengthWeeks" 
               min="1" 
               max="4" 
               defaultValue={1}

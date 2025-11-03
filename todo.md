@@ -14,9 +14,15 @@ Enables group management for a user
   - [x] Set Season length
   - [x] Set Theme length
 - [ ] CRUD group members
-  - [ ] can't add user to group if in group
-- [ ] invite link that adds user to group
-  - [ ] unauthed user, login or create account -> group join flow
+  - For mvp, users can only be in 1 group
+  - [x] Users can join a group with a link
+    - link should expire
+  - [x] Users can join a group with an invite code
+    - code should expire
+  - [x] unauthed user, login or create account -> group join flow
+  - [ ] Users can generate an invite link/code
+  - [ ] Users can only join 1 group, if they get to the join page with code
+        and they are in a group already, joining should fail
 - [ ] Update Group Details
   - Need to decided what can be updated for MVP if anything for now, might punt
 

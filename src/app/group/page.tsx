@@ -1,19 +1,21 @@
 import { getUser } from "@/src/lib/auth/getUser"
 import GroupZeroState from "./components/GroupZeroState";
-import { GetGroupDetails } from "../api/group/actions";
+import { GetGroupDetails, GetGroupMembers } from "../api/group/actions";
 import { GroupDetailsDto } from "../pick/model";
 import { group } from "console";
+import { User } from "@/src/types/user";
 
 
 export default async function Group() {
   const user = await getUser();
   let groupDetails: GroupDetailsDto | null = null;
+  let groupMembers: User[] = [];
 
   if (user.groupId) {
     groupDetails = await GetGroupDetails(user.groupId);
+    groupMembers = [...(await GetGroupMembers(user.groupId))]
   }
 
-  console.log(groupDetails);
   return(
     <>
       {
@@ -29,7 +31,12 @@ export default async function Group() {
         <div>End Date: {groupDetails.themeEndDateUtc.toString()}</div>
         <div>Picked By: {groupDetails.themePickUserName}</div>
         <div>Next Theme Picker: {groupDetails.nextThemePickUserName}</div>
-        <div>Members: {"TODO"}</div>
+        <div>
+          <div>Members</div>
+          <ul className="list-disc pl-5">
+            {groupMembers.map(m => <li key={m.userId}>{m.userName}</li>)}
+          </ul>
+        </div>
         <div>Greatist Hits: {"TODO"}</div>
       </div>
       : <div>Having trouble fetching group details</div>

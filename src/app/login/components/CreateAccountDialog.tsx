@@ -5,10 +5,13 @@ import { Dialog, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend
 import { CreateAccountResult, createAccount } from "../../api/login/actions";
 import { useActionState, useEffect } from "react";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { getPendingGroupCode } from "../../api/auth/actions";
 
 
 export default function CreateAccountDialog({ isOpen, onClose }: 
   { isOpen: boolean; onClose: () => void }) {
+  const router = useRouter();
   
   const [state, formAction, isPending] = useActionState<CreateAccountResult | undefined, FormData>(
     async (_prev, formData) => {
@@ -17,16 +20,26 @@ export default function CreateAccountDialog({ isOpen, onClose }:
     { success: false }
   );
 
-  useEffect(() => {
-    if (state?.success && state?.credentials) {
-      onClose();
-      signIn("credentials", {
-        email: state.credentials.email,
-        password: state.credentials.password,
-        redirectTo: '/'
-      });
-    }
-  }, [state]);
+useEffect(() => {
+  if (state?.success && state?.credentials) {
+    onClose();
+    
+    signIn("credentials", {
+      email: state.credentials.email,
+      password: state.credentials.password,
+      redirect: false,
+    }).then(async (result) => {
+      if (result?.ok) {
+        // Check for pending group code
+        const pendingCode = await getPendingGroupCode();
+        router.push(pendingCode ? `/group/join/${pendingCode}` : '/');
+
+      } else if (result?.error) {
+        console.error('Sign in failed after account creation:', result.error);
+      }
+    });
+  }
+}, [state, onClose, router]);
 
   return(
     <Dialog open={isOpen} onClose={() => onClose()} className="relative">

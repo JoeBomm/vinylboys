@@ -1,12 +1,66 @@
 'use server'
 
 import { withUser } from "@/src/lib/api/withUser";
-import { getNextUtcDateForDay, HHmmToSecondsSinceMidnight } from "@/src/lib/dayjs"
-import { db } from "@/src/lib/db";
+import { HHmmToSecondsSinceMidnight } from "@/src/lib/dayjs"
 import { createGroupSchema } from "@/src/lib/zod";
 import { Session } from "next-auth";
 import z from "zod";
 import { GroupDetailsDto, GroupDetailsReadModel, toGroupDetailsDto } from "../../pick/model";
+import { toUsers, User, UserReadModel } from "@/src/types/user";
+import { createAndJoinGroup, insertGroupMember, insertGroupPickLog } from "./db/groupCommands";
+import { groupDetailsQuery, groupMembersQuery } from "./db/groupQueries";
+import { getUser } from "@/src/lib/auth/getUser";
+import { cookies } from "next/headers";
+import { db } from "@/src/lib/db";
+
+ export async function joinGroup(code: string) {
+  const user = await getUser();
+  
+  if (!user) {
+    return { success: false, error: 'Not authenticated' };
+  }
+  
+  // Validate code and add user to group
+  try {
+    // Your validation logic here
+    const groupId = await getGroupIdByCode(code);
+    
+    await addUserToGroup(user.id, groupId);
+    
+    // Clear the pending code cookie if it exists
+    (await cookies()).delete('pending_group_code');
+    
+    return { success: true, groupId: groupId };
+  } catch (error) {
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Invalid code' 
+    };
+  }
+}
+
+async function addUserToGroup(userId: string, groupId: number) {
+  db.transaction(() => {
+    insertGroupMember.run(groupId, userId);
+    insertGroupPickLog.run(groupId, userId, new Date().toISOString()); 
+  })();
+}
+
+async function getGroupIdByCode(code: string) {
+  const group = db.prepare(`
+    SELECT [Id] AS [GroupId] 
+    FROM [Group] 
+    WHERE [InviteCode] = @code 
+      AND [InviteCodeExpirationUTC] > DATETIME('now')
+    LIMIT 1
+  `).get({ code }) as { GroupId: number } | undefined;
+
+  if (!group) {
+    throw new Error("Invalid Code")
+  }
+
+  return group.GroupId;
+}
 
 export const createGroup = withUser(_createGroupImpl)
 
@@ -24,7 +78,7 @@ export interface CreateGroupResult {
   values?: {
     groupName?: string
     seasonLength?: number
-    themeLength?: number
+    themeLengthWeeks?: number
     endDay?: number
     endTime?: string
   }
@@ -35,13 +89,11 @@ async function _createGroupImpl(
   prevState: CreateGroupResult | undefined,
   formData: FormData
   ): Promise<CreateGroupResult> {  
-
-  // const { update } = useSession();
-  
+ 
   const parsed = createGroupSchema.safeParse({
     groupName: formData.get("groupName"),
     seasonLength: formData.get("seasonLength"),
-    themeLength: formData.get("themeLength"),
+    themeLengthWeeks: formData.get("themeLengthWeeks"),
     endDay: formData.get("endDayOfWeek"),
     endTime: formData.get("endTime")
   })
@@ -60,22 +112,22 @@ async function _createGroupImpl(
       values: {
         groupName: String(formData.get("groupName") ?? ""),
         seasonLength: Number(formData.get("seasonLength") ?? 24),
-        themeLength: Number(formData.get("themeLength") ?? 1),
+        themeLengthWeeks: Number(formData.get("themeLengthWeeks") ?? 1),
         endDay: Number(formData.get("endDayOfWeek") ?? 0),
         endTime: String(formData.get("endTime") ?? "")
       }
     };  
   }
   
-  
   try  {
+    const DAYS_IN_WEEK = 7;
+
     const groupId = createAndJoinGroup({
       userId: parseInt(session.user.id, 10),
       endTimeSecondsFromMidnight: HHmmToSecondsSinceMidnight(parsed.data.endTime), 
+      themeLengthDays: parsed.data.themeLengthWeeks * DAYS_IN_WEEK,
       ...parsed.data
     })
-
-    // await update({ user: {...session.user, groupId: groupId}})
 
     return {
       success: true, groupId: groupId
@@ -96,89 +148,13 @@ async function _createGroupImpl(
   }  
 }
 
-const insertGroup = db.prepare(`
-  INSERT INTO [Group] (
-    Name, 
-    ThemeLengthDays, 
-    ThemesPerSeason,
-    EndDayOfWeek, 
-    EndTimeSeconds
-  )
-  VALUES (?, ?, ?, ?, ?)`)
-
-const insertGroupMember = db.prepare(`
-  INSERT INTO [GroupMember] (GroupId, UserId)
-  VALUES (?, ?)`)
-
-const insertGroupTheme = db.prepare(`
-  INSERT INTO [GroupTheme] (GroupId, ThemeId, EndDateUTC)
-  VALUES (?, ?, ?)`)
-
-const insertGroupPickLog = db.prepare(`
-  INSERT INTO [PickLog] (groupId, userId, lastPickedAtUtc)
-  VALUES (?, ?, ?)`)
-
-interface CreateAndJoinGroupCommand {
-  userId: number
-  groupName: string
-  seasonLength: number
-  themeLength: number
-  endDay: number
-  endTimeSecondsFromMidnight: number // TODO: how to figure end date time
+export async function GetGroupDetails(groupId: string): Promise<GroupDetailsDto> {
+  const result = groupDetailsQuery.get({ groupId }) as GroupDetailsReadModel
+  return toGroupDetailsDto(result)
 }
 
-const createAndJoinGroup = db.transaction((command: CreateAndJoinGroupCommand) => {
-  const groupResult = insertGroup.run(
-    command.groupName,
-    command.themeLength,
-    command.seasonLength,
-    command.endDay,
-    command.endTimeSecondsFromMidnight
-  );
+export async function GetGroupMembers(groupId: string): Promise<User[]> {
+  const result = groupMembersQuery.all({ groupId }) as UserReadModel[];
 
-  const groupId = groupResult.lastInsertRowid as number;
-  const INITIAL_THEME_ID = -1;
-
-  insertGroupMember.run(groupId, command.userId);
-
-  insertGroupTheme.run(groupId, INITIAL_THEME_ID, getNextUtcDateForDay(command.endDay, command.themeLength, command.endTimeSecondsFromMidnight));
-
-  const MIN_UTC_DATE = '0000-01-01 00:00:00.000Z';
-  insertGroupPickLog.run(groupId, command.userId, MIN_UTC_DATE);
-
-  return groupId;
-});
-
-export async function GetGroupDetails(groupId: string): Promise<GroupDetailsDto> {
-  const query = db.prepare(`
-WITH NextThemePicker AS (
-  SELECT userId, groupId
-  FROM main.[PickLog]
-  WHERE [GroupId] = @groupId
-  ORDER BY [LastPickedAtUtc] ASC
-  LIMIT 1
-),
-CurrentGroupTheme AS (
-  SELECT [GroupId], [EndDateUtc], [UserId], [ThemeId]
-  FROM main.[GroupTheme]
-  WHERE [GroupId] = @groupId
-  ORDER BY [EndDateUtc] DESC
-  LIMIT 1
-)
-SELECT
-  g.[Name] AS groupName,
-  t.[Name] AS currentThemeName,
-  t.[Description] AS currentThemeDescription,
-  gt.[EndDateUtc] AS themeEndDateUtc,
-  u.[UserName] AS themePickUserName,
-  pu.[UserName] AS nextThemePickUserName
-FROM NextThemePicker np
-JOIN main.[Group] g ON g.[Id] = np.[GroupId]
-JOIN [CurrentGroupTheme] gt ON gt.[GroupId] = g.[Id]
-JOIN main.[Theme] t ON t.[Id] = gt.[ThemeId]
-JOIN main.[User] u ON u.[Id] = gt.[UserId]
-JOIN main.[User] pu ON pu.[Id] = np.[UserId];`)
-
- const result = query.get({ groupId }) as GroupDetailsReadModel
- return toGroupDetailsDto(result)
+  return toUsers(result);
 }

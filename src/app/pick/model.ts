@@ -26,7 +26,6 @@ export interface PickDto {
 }
 
 export function toPickDto(model: PickReadModel): PickDto {
-  console.log("toPickDto userId type before", typeof(model.UserId))
   return {
     pickId: model.PickId,
     albumName: model.AlbumName,

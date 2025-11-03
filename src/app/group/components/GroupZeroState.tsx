@@ -9,7 +9,9 @@ export default function GroupZeroState() {
       <Link href="/group/manage">
         <Button>Create a group</Button>
       </Link>
-      <Button>Join a Group</Button>
+      <Link href="/group/join">
+        <Button>Join a Group</Button>
+      </Link>
     </>
   )
 }

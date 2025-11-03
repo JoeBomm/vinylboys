@@ -29,7 +29,7 @@ export const createGroupSchema = z.object( {
   seasonLength: z.coerce.number()
     .gte(4, { message: "Season length must be more than 4 themes" })
     .lte(100, { message: "Season length must be less than 100 themes" }),
-  themeLength: z.coerce.number()
+  themeLengthWeeks: z.coerce.number()
     .gte(1, { message: "Theme length must be at least 1 week" })
     .lte(4, { message: "Theme length must be less than 4 weeks" }),
   endDay: z.coerce.number()

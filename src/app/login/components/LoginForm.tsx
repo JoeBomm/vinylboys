@@ -7,6 +7,7 @@ import { Fieldset, Label, Input } from "@headlessui/react"
 import { Button } from "@/src/components/ui/Button"
 import CreateAccountDialog from "./CreateAccountDialog"
 import { LoginResult, validateLogin } from "../../api/login/actions"
+import { getPendingGroupCode } from "../../api/auth/actions"
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
@@ -32,6 +33,9 @@ export default function LoginForm() {
         success: false,
         errors: { general: ["Invalid email or password"] },
       })
+    } else if (result?.ok) {
+      const pendingCode = await getPendingGroupCode();
+      router.push(pendingCode ? `/group/join/${pendingCode}` : '/pick');
     } else {
       router.push("/")
     }
