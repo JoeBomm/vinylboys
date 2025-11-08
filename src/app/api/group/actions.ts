@@ -4,7 +4,7 @@ import { withUser } from "@/src/lib/api/withUser";
 import dayjs, { HHmmToSecondsSinceMidnight } from "@/src/lib/dayjs"
 import { createGroupSchema } from "@/src/lib/zod";
 import { Session } from "next-auth";
-import z from "zod";
+import z, { success } from "zod";
 import { GroupDetailsDto, GroupDetailsReadModel, toGroupDetailsDto } from "../../pick/model";
 import { toUsers, User, UserReadModel } from "@/src/types/user";
 import { createAndJoinGroup, insertGroupMember, insertGroupPickLog } from "./db/groupCommands";
@@ -16,9 +16,14 @@ import { auth } from "@/auth";
 
  export async function joinGroup(code: string) {
   const user = await getUser();
+
   
   if (!user) {
     return { success: false, error: 'Not authenticated' };
+  }
+
+  if (!!user.groupId) {
+    return { success: false, error: "Already assigned to a group" }
   }
   
   // Validate code and add user to group

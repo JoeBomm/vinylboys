@@ -21,10 +21,8 @@ Enables group management for a user
     - code should expire
   - [x] unauthed user, login or create account -> group join flow
   - [x] Users can generate an invite link/code
-  - [ ] Users can only join 1 group, if they get to the join page with code
+  - [x] Users can only join 1 group, if they get to the join page with code
         and they are in a group already, joining should fail
-- [ ] Update Group Details
-  - Need to decided what can be updated for MVP if anything for now, might punt
 
 ### `theme-pick-history`
 Enables users to see group pick history for past themes
@@ -45,3 +43,5 @@ Enables users to see pick history for themes on all groups
 ### `uncategorized`
 - [ ] edit pick
 - [ ] voting
+- [ ] update group invite text to copy correct url for env
+- [ ] Update Group Details
