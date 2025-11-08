@@ -1,7 +1,7 @@
 'use server'
 
 import { withUser } from "@/src/lib/api/withUser";
-import { HHmmToSecondsSinceMidnight } from "@/src/lib/dayjs"
+import dayjs, { HHmmToSecondsSinceMidnight } from "@/src/lib/dayjs"
 import { createGroupSchema } from "@/src/lib/zod";
 import { Session } from "next-auth";
 import z from "zod";
@@ -12,6 +12,7 @@ import { groupDetailsQuery, groupMembersQuery } from "./db/groupQueries";
 import { getUser } from "@/src/lib/auth/getUser";
 import { cookies } from "next/headers";
 import { db } from "@/src/lib/db";
+import { auth } from "@/auth";
 
  export async function joinGroup(code: string) {
   const user = await getUser();
@@ -157,4 +158,23 @@ export async function GetGroupMembers(groupId: string): Promise<User[]> {
   const result = groupMembersQuery.all({ groupId }) as UserReadModel[];
 
   return toUsers(result);
+}
+
+export async function setGroupInviteCode(code: string): Promise<boolean> {
+    const session = await auth();
+
+    const groupId = session?.user.groupId;
+    const expirationDate = dayjs().add(1, 'hour').utc().format();
+
+    const updateCodeStmnt = db.prepare(`
+UPDATE [Group]
+SET [InviteCode] = @code, [InviteCodeExpirationUTC] = @expirationDate
+WHERE [Id] = @groupId;`);
+
+try{
+  const info = updateCodeStmnt.run({code, expirationDate, groupId});
+  return info.changes === 1
+} catch(e) {
+  return false
+}
 }

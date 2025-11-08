@@ -1,6 +1,7 @@
 export interface ThemeReadModel {
   groupId: number,
   pickerUserId: string,
+  pickerUserName: string,
   groupThemeId: number | null,
   themeName: string | null
   description: string | null
@@ -9,6 +10,7 @@ export interface ThemeReadModel {
 export interface ThemeDto {
   GroupId: number,
   PickerUserId: string,
+  PickerUserName: string,
   GroupThemeId: number | null,
   ThemeName: string | null
   Description: string | null
@@ -18,6 +20,7 @@ export function toThemeDto(model: ThemeReadModel): ThemeDto {
     const dto: ThemeDto = {
         GroupId: model.groupId,
         PickerUserId: model.pickerUserId,
+        PickerUserName: model.pickerUserName,
         GroupThemeId: model.groupThemeId,
         ThemeName: model.themeName,
         Description: model.description

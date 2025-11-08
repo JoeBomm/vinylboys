@@ -4,6 +4,8 @@ import { GetGroupDetails, GetGroupMembers } from "../api/group/actions";
 import { GroupDetailsDto } from "../pick/model";
 import { group } from "console";
 import { User } from "@/src/types/user";
+import { Button } from "@/src/components/ui/Button";
+import InviteCodeButton from "./components/InviteCodeButton";
 
 
 export default async function Group() {
@@ -33,6 +35,7 @@ export default async function Group() {
         <div>Next Theme Picker: {groupDetails.nextThemePickUserName}</div>
         <div>
           <div>Members</div>
+          <InviteCodeButton />
           <ul className="list-disc pl-5">
             {groupMembers.map(m => <li key={m.userId}>{m.userName}</li>)}
           </ul>

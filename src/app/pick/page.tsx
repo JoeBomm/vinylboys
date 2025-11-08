@@ -58,7 +58,7 @@ export default async function Pick() {
           <div>
             <ThemeInput />
           </div>)
-      || <div>waiting for {theme.PickerUserId} to pick the theme</div>
+      || <div>waiting for {theme.PickerUserName} to pick the theme</div>
       }
     </>
   )
@@ -102,16 +102,18 @@ WITH userGroup AS (
   LIMIT 1
 ),
 activeTheme AS (
-  SELECT gt.groupId, gt.userId AS pickerUserId, gt.id AS groupThemeId, t.name, t.description
+  SELECT gt.groupId, gt.userId AS pickerUserId, u.userName, gt.id AS groupThemeId, t.name, t.description
   FROM GroupTheme gt
   JOIN Theme t ON t.id = gt.themeId
+  JOIN User u ON u.Id = gt.UserId
   WHERE gt.groupId = (SELECT groupId FROM userGroup)
     AND gt.endDateUTC > DATE('now')
   LIMIT 1
 ),
 nextPicker AS (
-  SELECT userId
-  FROM PickLog
+  SELECT p.userId, u.userName
+  FROM PickLog p
+  JOIN User u ON u.Id = p.UserId
   WHERE groupId = (SELECT groupId FROM userGroup)
   ORDER BY lastPickedAtUtc ASC
   LIMIT 1
@@ -120,6 +122,7 @@ SELECT
   ug.groupId,
   COALESCE(at.groupThemeId, NULL) AS groupThemeId,
   COALESCE(at.pickerUserId, np.userId) AS pickerUserId,
+  COALESCE(at.userName, np.userName) AS pickerUserName,
   COALESCE(at.name, NULL) AS themeName,
   COALESCE(at.description, NULL) AS description
 FROM userGroup ug
